@@ -1,0 +1,13 @@
+<div class="menu-sidebar-content js-scrollbar1">
+    <!-- Step 4) set up router links to pass categoryId param -->
+    <nav class="navbar-sidebar">
+        <ul class="list-unstyled navbar-list">
+            <li *ngFor="let productCategory of productCategories">
+                <!-- active-link is a css style to make the current link bold -->
+                <a routerLink="/category/{{ productCategory.id }}" routerLinkActive="active-link">
+                    {{ productCategory.categoryName }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
