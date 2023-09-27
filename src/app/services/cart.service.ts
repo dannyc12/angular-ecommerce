@@ -14,7 +14,19 @@ export class CartService {
   totalPrice: Subject<number> = new BehaviorSubject<number>(0); 
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0); 
 
-  constructor() { }
+  storage: Storage = sessionStorage; // reference to web browser's session storage
+
+  constructor() {
+    // read data from storage
+    let data = JSON.parse(this.storage.getItem('cartItems'));
+
+    if (data != null) {
+      this.cartItems = data;
+    }
+
+    // compute totals based on data read from storage
+    this.computeCartTotals();
+   }
 
   subtractFromCart(cartItem: CartItem) {
     cartItem.quantity--;
@@ -43,7 +55,6 @@ export class CartService {
       // using .find() method
       existingCartItem = this.cartItems.find( currentItem => currentItem.id === cartItem.id );
 
-    
       // check if we found it
       alreadyInCart = (existingCartItem != undefined);
     }
@@ -57,7 +68,6 @@ export class CartService {
 
     // compute cart total price and quantity
     this.computeCartTotals();
-    
   }
 
   computeCartTotals() {
@@ -76,6 +86,14 @@ export class CartService {
 
     // log cart data for debugging purposes
     this.logCartData(totalPriceValue, totalQuantityValue);
+
+    // persist cart data
+    this.persistCartItems();
+  }
+
+  persistCartItems() {
+    // 'cartItems' is the key (can be named anything, but stay consistent), and this.cartItems is the value
+    this.storage.setItem('cartItems', JSON.stringify(this.cartItems));
   }
 
   logCartData(totalPriceValue: number, totalQuantityValue: number) {
